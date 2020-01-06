@@ -1,7 +1,6 @@
 TEMPLATE = app
-QT += widgets
-
-include($$absolute_path($$PWD/../../QtSkia/QtSkiaWidgetPublic.pri))
+QT += quick
+include($$absolute_path($$PWD/../../QtSkia/QtSkiaQuickPublic.pri))
 include($$absolute_path($$PWD/../Renderer/Renderer.pri))
 
 CONFIG(debug, debug|release) {
@@ -9,10 +8,10 @@ CONFIG(debug, debug|release) {
 } else {
     DESTDIR =$$absolute_path($$PWD/../../bin/release)
 }
-LIBS += -L$$DESTDIR -lQtSkiaWidget
+LIBS += -L$$DESTDIR -lQtSkiaQuick
 
 HEADERS += \
-    SkiaWidget.h
+    SkiaQuickWindow.h
 
 SOURCES += \
     main.cpp

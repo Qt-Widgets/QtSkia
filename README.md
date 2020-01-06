@@ -14,11 +14,15 @@ Skia由谷歌出资管理，任何人都可基于BSD免费软件许可证使用S
 
 Skia开发团队致力于开发其核心部分， 并广泛采纳各方对于Skia的开源贡献。
 
-源代码: skia.googlesource.com/skia.
+* 源代码: skia.googlesource.com/skia.
 
-提议: bug.skia.org.
+* 提议: bug.skia.org.
 
-论坛: skia-discuss@googlegroups.com.
+* 论坛: skia-discuss@googlegroups.com.
+
+* skia官网： https://skia.org
+
+* 谷歌github镜像: https://github.com/google/skia.git
 
 ### QtSkia
 
@@ -28,33 +32,8 @@ QtSkia提供了QWidget、QOpenGLWidget、QQuickWindow、QQuickItem等常用Qt渲
 
 可以方便地将skia引入到现有Qt项目中。
 
-在QtSkia中, 通常使用SkCanvas实现二维图形的渲染。
-
-SkCanvas是一个类似于QPainter的画笔，但比QPainter强大许多。
-
-下面示例画线和写字的代码:
-
-```c++
-void draw(SkCanvas *canvas)
-{
-    SkPaint p;
-    p.setAntiAlias(true);
-    p.setColor(SK_ColorRED);
-    p.setStrokeWidth(2.0f);
-    canvas->clear(SK_ColorWHITE);
-    SkFont font;
-    font.setSize(30);
-    canvas->drawString("Hello Skia", 600, 300, font, p);
-    canvas->drawLine(300, 300, 500, 500, p);
-    canvas->flush();
-}
-```
-
-效果如图：
-
-![](doc/demo.png)
-
 ## CI徽章
+
 | [Windows][win-link]| [Ubuntu][ubuntu-link]|[MacOS][macos-link]|[Android][android-link]|[IOS][ios-link]|
 |---------------|---------------|-----------------|-----------------|----------------|
 | ![win-badge]  | ![ubuntu-badge]      | ![macos-badge] |![android-badge]   |![ios-badge]   |
@@ -74,6 +53,88 @@ void draw(SkCanvas *canvas)
 
 [ios-link]: https://github.com/JaredTao/QtSkia/actions?query=workflow%3AIOS "IOSAction"
 [ios-badge]: https://github.com/JaredTao/QtSkia/workflows/IOS/badge.svg "IOS"
+
+## HelloSkia示例
+
+QtSkia处理了skia与QWidget、OpenGL、QQuick等渲染框架的融合问题，并将SkCanvas在接口中提供出来。
+
+开发者只要重写父类虚函数，就能够使用SkCanvas了。
+
+SkCanvas是一个类似于QPainter的画笔，但性能和功能都比QPainter强大许多。
+
+下面示例QWidget中画线和写字的代码:
+
+```c++
+//main.cpp
+#pragma once
+#include <QApplication>
+#include "QSkiaWidget.h"
+
+class SkiaWidget : public QSkiaWidget {
+    Q_OBJECT
+public:
+    void draw(SkCanvas *canvas) override
+    {
+        SkPaint p;
+        p.setAntiAlias(true);
+        p.setColor(SK_ColorRED);
+        p.setStrokeWidth(2.0f);
+        canvas->clear(SK_ColorWHITE);
+        SkFont font;
+        font.setSize(30);
+        canvas->drawString("Hello Skia", 600, 300, font, p);
+        canvas->drawLine(300, 300, 500, 500, p);
+        canvas->flush();
+    }
+};
+
+int main(int argc, char* argv[])
+{
+    QApplication app(argc, argv);
+
+    SkiaWidget win;
+    win.resize(1024, 768);
+    win.show();
+    return app.exec();
+}
+
+```
+
+效果如图：
+
+![](doc/demo.png)
+
+## 依赖环境
+
+skia需要python2。(相关构建工具都是基于python2开发的。)
+
+编译器需要支持C++11，skia推荐使用clang编译。
+
+skia不支持32bit/x86架构。
+
+Qt版本5.9以上即可，无特殊限制。
+
+建议使用5.9.x或5.12.x等长期支持版本。
+
+### windows
+
+编译器需要使用vs2015及以上。
+
+注意不支持32bit/x86架构
+
+建议使用VS2017，并增加clang支持。
+
+### Linux
+
+待补充
+
+### MacOS
+
+待补充
+
+### Android
+
+待补充
 
 ## 进度计划
 
@@ -104,11 +165,12 @@ void draw(SkCanvas *canvas)
 
 skia官方仓库在 https://skia.googlesource.com/skia
 
-github上面也有镜像 https://github.com/google/skia
+github上面也有官方的镜像 https://github.com/google/skia
 
-国内用户不一定能访问到googlesource，github速度也不快，所以我个人在gitee上做了一个镜像。
+skia依赖的三方库有28个以上。
 
-另外skia依赖的三方库有28个以上，源码也在gitee上做了镜像，不定期更新，具体可以关注: https://gitee.com/QtSkia
+国内用户不一定能访问到googlesource，涛哥在github上整理了所有依赖仓库的镜像，
 
+并使用自动化工具定期同步，具体见https://github.com/QtSkia
 
-
+另外github速度不够快，所以涛哥在gitee上也做了镜像, 以方便国内用户，具体见：https://gitee.com/QtSkia
